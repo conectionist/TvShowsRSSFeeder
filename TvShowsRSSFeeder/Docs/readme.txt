@@ -1,0 +1,1 @@
+documentaion should contain info about the application's architecture as well as usage (videos, screenshots etc.)
