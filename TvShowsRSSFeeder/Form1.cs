@@ -38,6 +38,12 @@ namespace TvShowsRSSFeeder
             backgroundRSSHandler.RunWorkerAsync();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            originalWindowSize = this.Size;
+            backgroundWindowAnimator.RunWorkerAsync();
+        }
+
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
             //if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -48,14 +54,23 @@ namespace TvShowsRSSFeeder
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // if the exit option has already been clicked, just return
+            if (itsQuittingTime)
+                return;
+
             itsQuittingTime = true;
             backgroundCleanupWorker.RunWorkerAsync();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void backgroundCleanupWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            originalWindowSize = this.Size;
-            backgroundWindowAnimator.RunWorkerAsync();
+            while (!rssFeedHandlerIsDone)
+                Thread.Sleep(100);
+        }
+
+        private void backgroundCleanupWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Application.Exit();
         }
 
         private void backgroundRSSHandler_DoWork(object sender, DoWorkEventArgs e)
@@ -95,17 +110,6 @@ namespace TvShowsRSSFeeder
         private void backgroundRSSHandler_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             
-        }
-
-        private void backgroundCleanupWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (!rssFeedHandlerIsDone)
-                Thread.Sleep(100);
-        }
-
-        private void backgroundCleanupWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Application.Exit();
         }
 
         private void backgroundWindowAnimator_DoWork(object sender, DoWorkEventArgs e)

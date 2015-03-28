@@ -1,12 +1,15 @@
-﻿- add tabs in settings window
+﻿- add tabs in settings window (basically organize settings by categories)
 - save settings in file
-- get categories (show name) and dynamically add them to a tab in the settings window and next them, 
+- add categories (Revenge, Game of Thrones, Simpsons etc.) dynamically to a tab in the settings window and next to them, 
   a textbox with the path where to save the episodes from the respective tv series on the disk 
   (e.g. Revenge: D:\Videos\Seriale\Revenge\Season 4)
+  This can be done by parsing name from received rss feeds
 - save them and add new ones if they appear; else get them from config file
 - message box if there is not path set before downloading
-- add newly downloaded torrents to deluge directly (now it just opens deluge as if double clicking on the torrent)
-- check if deluge is running first and if not, start it
+- add newly downloaded torrents to utorrent directly (it just opens utorrent as if double clicking on the torrent)
+- check if utorrent is running first and if not, start it
 - add elements from download dialog on a (scrollable) panel (in case there are a lot of)
 - disable download button after being clicked
 - add downloaded torrents to another "config" file and use it to filter "new" torrents before adding them to download dialog
+  basically allow to dismiss torrents I don't want to download or ones I have already downloaded
+- add tab in settings when u can specify a torrent client and the syntax for opening a torrent file from the command line (and maybe other operations in the future)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Xml;
 using System.IO;
+using System.Windows.Forms;
 
 namespace TvShowsRSSFeeder
 {
@@ -37,34 +38,43 @@ namespace TvShowsRSSFeeder
         public void UpdateRssFeeds()
         {
             WebClient client = new WebClient();
-            string downloadString = client.DownloadString(rssFeedString);
-
-            XmlDocument doc = new XmlDocument();
-            doc.Load(new StringReader(downloadString));
-
-            XmlNodeList episodes = doc.SelectNodes("rss/channel/item");
-            XmlNode episodeTitle;
-            XmlNode episodeCategory;
-            XmlNode episodePubdate;
-            XmlNode episodeLink;
-            XmlNode episodeDescription;
-
-            rssFeedsList.Clear();
-
-            for (int i = 0; i < episodes.Count; i++)
+            try
             {
-                episodeTitle        = episodes.Item(i).SelectSingleNode("title");
-                episodeCategory     = episodes.Item(i).SelectSingleNode("category");
-                episodePubdate      = episodes.Item(i).SelectSingleNode("pubDate");
-                episodeLink         = episodes.Item(i).SelectSingleNode("link");
-                episodeDescription  = episodes.Item(i).SelectSingleNode("description");
+                client.Headers.Add("user-agent", " Mozilla/5.0 (Windows NT 6.1; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0");
+                string downloadString = client.DownloadString(rssFeedString);
 
-                rssFeedsList.Add(episodeTitle.InnerText, new TvTorrentsEpisodeInfo(episodeTitle.InnerText,
-                                                                                   episodeCategory.InnerText,
-                                                                                   episodePubdate.InnerText,
-                                                                                   episodeLink.InnerText,
-                                                                                   episodeDescription.InnerText));
+                XmlDocument doc = new XmlDocument();
+                doc.Load(new StringReader(downloadString));
+
+                XmlNodeList episodes = doc.SelectNodes("rss/channel/item");
+                XmlNode episodeTitle;
+                XmlNode episodeCategory;
+                XmlNode episodePubdate;
+                XmlNode episodeLink;
+                XmlNode episodeDescription;
+
+                rssFeedsList.Clear();
+
+                for (int i = 0; i < episodes.Count; i++)
+                {
+                    episodeTitle = episodes.Item(i).SelectSingleNode("title");
+                    episodeCategory = episodes.Item(i).SelectSingleNode("category");
+                    episodePubdate = episodes.Item(i).SelectSingleNode("pubDate");
+                    episodeLink = episodes.Item(i).SelectSingleNode("link");
+                    episodeDescription = episodes.Item(i).SelectSingleNode("description");
+
+                    rssFeedsList.Add(episodeTitle.InnerText, new TvTorrentsEpisodeInfo(episodeTitle.InnerText,
+                                                                                       episodeCategory.InnerText,
+                                                                                       episodePubdate.InnerText,
+                                                                                       episodeLink.InnerText,
+                                                                                       episodeDescription.InnerText));
+                }
             }
+            catch (WebException ex)
+            {
+                MessageBox.Show("There seems to be an issue with the following RSS feed:\n" + rssFeedString + "\n\nPlease change it!\n\nError: " + ex.Message);
+            }
+            
         }
 
         public List<TvTorrentsEpisodeInfo> GetLatestEpisodes(int noOlderThanNDays)
